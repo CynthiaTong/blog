@@ -78,7 +78,7 @@
 <link href="/blog/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="computer-science,bit-manipulation," />
 
 
 
@@ -94,16 +94,18 @@
 
 
 
-<meta name="description" content="personal blog of Xin(Cynthia) Tong">
-<meta property="og:type" content="website">
-<meta property="og:title" content="cynxt blog">
-<meta property="og:url" content="https://cynthiatong.github.io/blog/index.html">
+<meta name="description" content="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.Topics covered: bitwise operators hamming weight and hamming distance problems  Bit Operat">
+<meta name="keywords" content="computer-science,bit-manipulation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bit Manipulation (1) Bit Operators &amp; Hamming Distance">
+<meta property="og:url" content="https://cynthiatong.github.io/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/index.html">
 <meta property="og:site_name" content="cynxt blog">
-<meta property="og:description" content="personal blog of Xin(Cynthia) Tong">
+<meta property="og:description" content="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.Topics covered: bitwise operators hamming weight and hamming distance problems  Bit Operat">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-01-20T11:07:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="cynxt blog">
-<meta name="twitter:description" content="personal blog of Xin(Cynthia) Tong">
+<meta name="twitter:title" content="Bit Manipulation (1) Bit Operators &amp; Hamming Distance">
+<meta name="twitter:description" content="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.Topics covered: bitwise operators hamming weight and hamming distance problems  Bit Operat">
 
 
 
@@ -132,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="https://cynthiatong.github.io/blog/"/>
+  <link rel="canonical" href="https://cynthiatong.github.io/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/"/>
 
 
 
 
 
-  <title>cynxt blog</title>
+  <title>Bit Manipulation (1) Bit Operators & Hamming Distance | cynxt blog</title>
   
 
 
@@ -163,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -268,9 +268,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -300,9 +300,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/" itemprop="url">Bit Manipulation (1) Bit Operators & Hamming Distance</a></h1>
+          <h1 class="post-title" itemprop="name headline">Bit Manipulation (1) Bit Operators & Hamming Distance</h1>
         
 
         <div class="post-meta">
@@ -352,9 +350,7 @@
       
 
       
-        
-          
-            <h2 id="This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves"><a href="#This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves" class="headerlink" title="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves."></a>This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.</h2><h3 id="Topics-covered"><a href="#Topics-covered" class="headerlink" title="Topics covered:"></a>Topics covered:</h3><ul>
+        <h2 id="This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves"><a href="#This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves" class="headerlink" title="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves."></a>This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.</h2><h3 id="Topics-covered"><a href="#Topics-covered" class="headerlink" title="Topics covered:"></a>Topics covered:</h3><ul>
 <li>bitwise operators</li>
 <li>hamming weight and hamming distance problems</li>
 </ul>
@@ -400,8 +396,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalHammingDistance</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = nums.length;</span><br><span class="line">  <span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> k;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">    k = <span class="number">0</span>; <span class="comment">// reset count</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">      k += (nums[j] &gt;&gt; i) &amp; <span class="number">1</span>;</span><br><span class="line">    total += k * (n - k);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> total;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>This concludes my first post on bitwise operations, more to come later.</p>
 
-          
-        
       
     </div>
     
@@ -413,17 +407,43 @@
     
 
     
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:</strong>
+    Xin Tong
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link:</strong>
+    <a href="https://cynthiatong.github.io/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/" title="Bit Manipulation (1) Bit Operators & Hamming Distance">https://cynthiatong.github.io/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice: </strong>
+    All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.
+  </li>
+</ul>
+
+      </div>
+    
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/blog/tags/computer-science/" rel="tag"># computer-science</a>
+          
+            <a href="/blog/tags/bit-manipulation/" rel="tag"># bit-manipulation</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -433,10 +453,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -444,6 +465,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -464,8 +489,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/blog/images/avatar.jpg"
@@ -542,6 +576,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves"><span class="nav-number">1.</span> <span class="nav-text">This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Topics-covered"><span class="nav-number">1.1.</span> <span class="nav-text">Topics covered:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bit-Operators"><span class="nav-number">1.2.</span> <span class="nav-text">Bit Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bit-Shifts"><span class="nav-number">1.3.</span> <span class="nav-text">Bit Shifts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hamming-Weight-amp-Hamming-Distance"><span class="nav-number">1.4.</span> <span class="nav-text">Hamming Weight &amp; Hamming Distance</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -664,10 +714,10 @@
 
 
   
-    <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
