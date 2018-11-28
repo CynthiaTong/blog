@@ -78,7 +78,7 @@
 <link href="/blog/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="computer-science,Udi-Manber-Algorithms," />
 
 
 
@@ -94,16 +94,18 @@
 
 
 
-<meta name="description" content="personal blog of Xin(Cynthia) Tong">
-<meta property="og:type" content="website">
-<meta property="og:title" content="cynxt blog">
-<meta property="og:url" content="https://cynthiatong.github.io/blog/index.html">
+<meta name="description" content="ProblemGiven two strings A and B of size n and m respectively (n &amp;gt;= m), find the first occurrence of B in A.Formally,12find the smallest position k s.t. A_k+i = B_i for all i in [0, n-1],or indicat">
+<meta name="keywords" content="computer-science,Udi-Manber-Algorithms">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP String Matching Algorithm">
+<meta property="og:url" content="https://cynthiatong.github.io/blog/2018/11/28/KMP_String_Matching/index.html">
 <meta property="og:site_name" content="cynxt blog">
-<meta property="og:description" content="personal blog of Xin(Cynthia) Tong">
+<meta property="og:description" content="ProblemGiven two strings A and B of size n and m respectively (n &amp;gt;= m), find the first occurrence of B in A.Formally,12find the smallest position k s.t. A_k+i = B_i for all i in [0, n-1],or indicat">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-11-28T17:25:24.045Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="cynxt blog">
-<meta name="twitter:description" content="personal blog of Xin(Cynthia) Tong">
+<meta name="twitter:title" content="KMP String Matching Algorithm">
+<meta name="twitter:description" content="ProblemGiven two strings A and B of size n and m respectively (n &amp;gt;= m), find the first occurrence of B in A.Formally,12find the smallest position k s.t. A_k+i = B_i for all i in [0, n-1],or indicat">
 
 
 
@@ -132,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="https://cynthiatong.github.io/blog/"/>
+  <link rel="canonical" href="https://cynthiatong.github.io/blog/2018/11/28/KMP_String_Matching/"/>
 
 
 
 
 
-  <title>cynxt blog</title>
+  <title>KMP String Matching Algorithm | cynxt blog</title>
   
 
 
@@ -163,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -258,9 +258,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -290,9 +290,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/11/28/KMP_String_Matching/" itemprop="url">KMP String Matching Algorithm</a></h1>
+          <h1 class="post-title" itemprop="name headline">KMP String Matching Algorithm</h1>
         
 
         <div class="post-meta">
@@ -342,9 +340,7 @@
       
 
       
-        
-          
-            <h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given two strings A and B of size n and m respectively (n &gt;= m), find the first occurrence of B in A.<br>Formally,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find the smallest position k s.t. A_k+i = B_i for all i in [0, n-1],</span><br><span class="line">or indicate k DNE.</span><br></pre></td></tr></table></figure></p>
+        <h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>Given two strings A and B of size n and m respectively (n &gt;= m), find the first occurrence of B in A.<br>Formally,<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find the smallest position k s.t. A_k+i = B_i for all i in [0, n-1],</span><br><span class="line">or indicate k DNE.</span><br></pre></td></tr></table></figure></p>
 <p><em>Application: keyword search in text files.</em></p>
 <h2 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h2><p>The naive approach matches B starting from each character in A. This simple approach works well when B is very short. The running time will be <em>O(mn)</em>, approximately <em>O(n)</em> when m is small. However, this running time is too long if we have relatively long B, and/or the alphabet is small with lots of repeating patterns.</p>
 <p>The intuition of KMP is: when a mismatch is found at A_i and B_j, we want to avoid going back to p (the last matching start position) + 1. If we do go back every time, we waste computation matching characters we have already tried to match before.</p>
@@ -355,8 +351,6 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Input: string B, size m</span></span><br><span class="line"><span class="comment"># Output: next array of size m</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ComputeNext</span><span class="params">(B)</span>:</span></span><br><span class="line">  m = len(B)</span><br><span class="line">  next = [<span class="number">0</span>] * m</span><br><span class="line">  next[<span class="number">0</span>] = <span class="number">-1</span></span><br><span class="line">  next[<span class="number">1</span>] = <span class="number">0</span> <span class="comment"># two base cases</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, m):</span><br><span class="line">    j = next[i<span class="number">-1</span>] + <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> B[i<span class="number">-1</span>] != B[j] <span class="keyword">and</span> j &gt; <span class="number">0</span>:</span><br><span class="line">      j = next[j] + <span class="number">1</span></span><br><span class="line">    next[i] = j</span><br></pre></td></tr></table></figure>
 <p>KMP Algorithm, given the pre-computed <code>next</code> array:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Input: string A, B</span></span><br><span class="line"><span class="comment"># Output: first match starting position k</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">KMP</span><span class="params">(A, B)</span>:</span></span><br><span class="line">  n = len(A)</span><br><span class="line">  m = len(B)</span><br><span class="line"></span><br><span class="line">  i = j = <span class="number">0</span></span><br><span class="line">  k = <span class="number">-1</span></span><br><span class="line">  <span class="keyword">while</span> i &lt; n <span class="keyword">and</span> k == <span class="number">-1</span>:</span><br><span class="line">    <span class="keyword">if</span> A[i] == B[j]:</span><br><span class="line">      i += <span class="number">1</span></span><br><span class="line">      j += <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      j = next[j] + <span class="number">1</span></span><br><span class="line">      <span class="keyword">if</span> j == <span class="number">0</span>: <span class="comment"># next[j] = -1, prev j = 0</span></span><br><span class="line">        i += <span class="number">1</span> <span class="comment"># move to next char in A</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> j == m: <span class="comment"># found</span></span><br><span class="line">      k = i - m <span class="comment"># go back to start of matching substring</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> k</span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
     
@@ -368,181 +362,59 @@
     
 
     
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://cynthiatong.github.io/blog/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Xin Tong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/blog/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="cynxt blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/" itemprop="url">Bit Manipulation (1) Bit Operators & Hamming Distance</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T10:58:28+04:00">
-                2018-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves"><a href="#This-post-is-the-beginning-of-a-series-of-articles-on-bit-manipulation-and-the-programming-problems-it-solves" class="headerlink" title="This post is the beginning of a series of articles on bit manipulation and the programming problems it solves."></a>This post is the beginning of a series of articles on bit manipulation and the programming problems it solves.</h2><h3 id="Topics-covered"><a href="#Topics-covered" class="headerlink" title="Topics covered:"></a>Topics covered:</h3><ul>
-<li>bitwise operators</li>
-<li>hamming weight and hamming distance problems</li>
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:</strong>
+    Xin Tong
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link:</strong>
+    <a href="https://cynthiatong.github.io/blog/2018/11/28/KMP_String_Matching/" title="KMP String Matching Algorithm">https://cynthiatong.github.io/blog/2018/11/28/KMP_String_Matching/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice: </strong>
+    All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.
+  </li>
 </ul>
-<h3 id="Bit-Operators"><a href="#Bit-Operators" class="headerlink" title="Bit Operators"></a><em>Bit Operators</em></h3><p>This is mostly recap from the Computer Systems Organization class I took last fall. The basic definition of bit operators can be found on <a href="https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators" target="_blank" rel="noopener">Wikipedia</a>. I divide the operations into two categories: operations on one single bit, and bit shifts. Things we can do with a single bit include: AND, OR, XOR, and NOT. There are only two types of bit shifts: left shift and right shift.</p>
-<p>Here are some handy tricks and rules from <a href="http://www.crackingthecodinginterview.com/" target="_blank" rel="noopener">CtCI</a>:</p>
-<table>
-<thead>
-<tr>
-<th>XOR(^)</th>
-<th>AND(&amp;)</th>
-<th>OR(&#124;)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>x ^ 1s = ~x</td>
-<td>x &amp; 1s = x</td>
-<td>x &#124; 1s = 1s</td>
-</tr>
-<tr>
-<td>x ^ 0s = x</td>
-<td>x &amp; 0s = 0</td>
-<td>x &#124; 0s = x</td>
-</tr>
-<tr>
-<td>x ^ x = 0</td>
-<td>x &amp; x = x</td>
-<td>x &#124; x = x</td>
-</tr>
-</tbody>
-</table>
-<p>It is important to note the difference between the bit operators <code>&amp;</code>, <code>|</code>, <code>~</code>, and the logical operators <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>.<br>For instances, <code>2 &amp; 1 = 10 &amp; 01 = 0</code>, but <code>2 &amp;&amp; 1 = 1</code>; <code>~4 = ~100 = 11 = 3</code>, but <code>!4 = 0</code>.<br>Rule is: when <code>&amp;&amp;</code> with 0, the result is always 0, when <code>||</code> with nonzero values, the result is always 1; when <code>!</code> with nonzero values, the result is always 0. In cases of the bitwise operations, however, the result varies.</p>
-<h3 id="Bit-Shifts"><a href="#Bit-Shifts" class="headerlink" title="Bit Shifts"></a><em>Bit Shifts</em></h3><p>Relatively simple concept. The left shift, denoted by <code>&lt;&lt;</code>, shifts the value left by 1 bit, effectively multiplying that number by 2. The <em>arithmatic</em> right shift <code>&gt;&gt;</code> does the contrary - it divides the number by 2. The other type of right shift is called <em>logical</em> right shift (denoted as <code>&gt;&gt;&gt;</code> in Java). The only difference between arithmatic and logical right shifts is, arithmatic &lt;=&gt; preserving the MSB (Most Significant Bit); logical &lt;=&gt; padding the MSB with 0s. It really makes a difference when dealing with negative integers, since their MSB is always 1.</p>
-<h3 id="Hamming-Weight-amp-Hamming-Distance"><a href="#Hamming-Weight-amp-Hamming-Distance" class="headerlink" title="Hamming Weight &amp; Hamming Distance"></a><em>Hamming Weight &amp; Hamming Distance</em></h3><p>Definitions from <a href="https://en.wikipedia.org/wiki/Hamming_weight" target="_blank" rel="noopener">Wikipedia</a>:</p>
-<blockquote>
-<p>The Hamming weight of a string is the number of symbols that are different from the zero-symbol of the alphabet used. It is thus equivalent to the Hamming distance from the all-zero string of the same length. For the most typical case, a string of bits, this is the number of 1s in the string, or the digit sum of the binary representation of a given number and the ℓ₁ norm of a bit vector.</p>
-</blockquote>
-<p>In short,<br>hamming weight = #1s in the binary representation of a number<br>hamming distance between A and B = # of different bits in the binary representations of A and B = hamming weight of (A^B)</p>
-<p>Naturally, the first programming problems on this topic are to calculate these values efficiently. By using bit shift and the AND operator, we can obtain the hamming weight of any integer in time <code>O(n)</code>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// integers are treated as unsigned here</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingWeight</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> count = <span class="number">0</span>; <span class="comment">// keep a count of the 1 bits</span></span><br><span class="line">  <span class="keyword">while</span> (n != <span class="number">0</span>) &#123;</span><br><span class="line">    count += (n &amp; <span class="number">1</span>); <span class="comment">// n &amp; 1 checks whether the LSB is 1</span></span><br><span class="line">    n &gt;&gt;&gt;= <span class="number">1</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>And to calculate the hamming distance between two integers, just use the above <code>hammingDistance</code> function as a subroutine, and input the XOR of the two integers as such:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hammingDistance</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> hammingWeight(x^y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>The running time will also be linear, since XOR takes worst time <code>O(n)</code>.</p>
-<p>Another interesting <a href="https://leetcode.com/problems/total-hamming-distance/description/" target="_blank" rel="noopener">problem</a> on LeetCode is calculating the “total hamming distance” of an array of integers. The brute force solution is to use the <code>hammingDistance</code> function we discussed on every unique pair of integers in the array, which takes <code>O(n^3)</code> time - a nightmare for large inputs. Luckily, we have a workaround. A much better solution involves considering the array of integers as a whole. For each bit in the 32-bit integers, calculate the number of values in the array that has a 1 on that bit. Suppose this count is <code>k</code> for a certain bit, then given a total of <code>n</code> integers, there are <code>(n-k)</code> of them that have a 0 instead. Therefore, this particular bit contributes <code>k*(n-k)</code> to the total hamming distance.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalHammingDistance</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = nums.length;</span><br><span class="line">  <span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> k;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">    k = <span class="number">0</span>; <span class="comment">// reset count</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">      k += (nums[j] &gt;&gt; i) &amp; <span class="number">1</span>;</span><br><span class="line">    total += k * (n - k);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> total;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>This concludes my first post on bitwise operations, more to come later.</p>
 
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
+      </div>
     
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/blog/tags/computer-science/" rel="tag"># computer-science</a>
+          
+            <a href="/blog/tags/Udi-Manber-Algorithms/" rel="tag"># Udi-Manber-Algorithms</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2018/01/19/Bit-Manipulation-(1)-Bit-Operators-&-Hamming-Distance/" rel="next" title="Bit Manipulation (1) Bit Operators & Hamming Distance">
+                <i class="fa fa-chevron-left"></i> Bit Manipulation (1) Bit Operators & Hamming Distance
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -552,10 +424,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -563,6 +436,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -583,8 +460,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/blog/images/avatar.jpg"
@@ -661,6 +547,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem"><span class="nav-number">1.</span> <span class="nav-text">Problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Intuition"><span class="nav-number">2.</span> <span class="nav-text">Intuition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pseudocode"><span class="nav-number">3.</span> <span class="nav-text">Pseudocode</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -776,10 +678,10 @@
   
 
   
-    <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
