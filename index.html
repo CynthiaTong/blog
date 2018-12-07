@@ -65,7 +65,7 @@
   
     
     
-    <link href="//fonts.googleapis.com/css?family=Open-Sans:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
   
 
 
@@ -259,6 +259,190 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://cynthiatong.github.io/blog/blog/2018/12/06/distr_sys_for_fun_notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xin Tong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cynxt blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/blog/2018/12/06/distr_sys_for_fun_notes/" itemprop="url">reading notes: Distributed Systems for Fun and Profit</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-06T13:30:35+04:00">
+                2018-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="5-Replication-weak-consistency-model-protocols"><a href="#5-Replication-weak-consistency-model-protocols" class="headerlink" title="5. Replication: weak consistency model protocols"></a>5. Replication: weak consistency model protocols</h2><ul>
+<li><p><em>Strong Consistency</em> is achieved by enforcing global total order - undesirable in case of unavailability due to partition, and expensive b/c the majority of nodes must be contacted (more than once, think 2PC).</p>
+</li>
+<li><p><em>Eventual Consistency</em> with:</p>
+<ul>
+<li>probabilistic guarantees, ex. Amazon Dynamo</li>
+<li>strong guarantees, CRDT (convergent replicated data types), CALM (consistency with logical monotonicity) conjecture</li>
+</ul>
+</li>
+<li><p>Dynamo</p>
+<ul>
+<li>weak consistency guarantee + high availability</li>
+<li>k/v store with <em>consistent hashing</em>.</li>
+<li>uses sloppy (partial) quorums (rather than strict, majority quorums)</li>
+<li>user specify <code>W</code> / <code>R</code>: # nodes queried for write / read.<br>Usually: <code>W + R &gt; N = 3</code> to have at least 1 overlapping node - less likely to return a stale value</li>
+<li>probabilistic <em>“strong consistency”</em> guarantee. Upon node failure, Dynamo replaces failed nodes with unrelated but accessible nodes.</li>
+<li>Conflict detection &amp; read repair<ul>
+<li><em>metadata</em> associated with each piece of data</li>
+<li>metadata types: no metadata (slowest wins), timestamp, version number, vector clock</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Replica Synchronization</p>
+<ul>
+<li><em>Gossip</em>: every timeframe <code>t</code>, nodes have prob <code>p</code> of attempting to synchronize - no guarantees.</li>
+<li><em>Merkle Tree</em> to make synchronization efficient</li>
+</ul>
+</li>
+<li><p>PBS (probabilistically bounded staleness)</p>
+<ul>
+<li>estimates degree of inconsistency using simulation &amp; real-world system data</li>
+</ul>
+</li>
+<li><p>CRDTs</p>
+<ul>
+<li>certain set of operations are commutative - same result in any order</li>
+<li>formally: the operations need be:<ul>
+<li>1) Associative, so grouping doesn’t matter</li>
+<li>2) Commutative, so order doesn’t matter</li>
+<li>3) Idempotent (<code>a+a=a</code>), so duplication doesn’t matter</li>
+</ul>
+</li>
+<li>Mathematically called <code>join semilattices</code> and <code>meet semilattices</code>. Ex: <code>max</code>, <code>union</code>.</li>
+</ul>
+</li>
+<li><p>CALM theorem</p>
+<ul>
+<li>programming models in which the order of statements doesn’t play a significant role</li>
+<li>Order-independent Declarative languages, Ex. Map Reduce, SQL</li>
+<li>CALM: logically monotonic programs are guaranteed to be eventually consistent &amp; safe to execute without coordination</li>
+<li><em>Monotony</em>: if sentence φ is a consequence of a set of premises Γ, then it can also be inferred from any set Δ of premises extending Γ</li>
+<li>In plain words, no conclusions can be invalidated by learning new knowledge</li>
+<li><em>relational algebra (SQL)</em>, <em>Datalog</em></li>
+<li><em>open-world assumption (OWA)</em>: we can only safely assert something we can deduce from what is known. What is currently not known to be true is <em>unknown</em>, not true or false. OWA applies when a system has incomplete information.</li>
+<li><em>closed-world assumption (CWA)</em>: what is not currently known to be true, is false. CWA applies when a system has complete information (such as databases).</li>
+<li><em>logical circumscription</em>: the known entities are all there are. No additional information to invalidate our assertion, in case of non-monotonic logic.</li>
+<li><blockquote>
+<p>in order to handle nonmonotonicity one needs to either use distributed coordination to ensure that assertions are made only after all the information is known or make assertions with the caveat that the conclusion can be invalidated later on.</p>
+</blockquote>
+</li>
+<li>CALM application: the <em>Bloom</em> language.</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -599,7 +783,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives/">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -612,7 +796,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
