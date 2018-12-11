@@ -292,7 +292,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/blog/2018/12/11/String-Sorts/" itemprop="url">String Sorting</a></h1>
+                <a class="post-title-link" href="/blog/2018/12/11/String-Sorts/" itemprop="url">String Sorting Algorithms</a></h1>
         
 
         <div class="post-meta">
@@ -344,7 +344,46 @@
       
         
           
-            <p><em>Reading notes of Section 5.1, Algorithms 4th Edition</em></p>
+            <p><em>Reading notes of Section 5.1, Algorithms 4th Edition by Robert Sedgewick and Kevin Wayne.</em></p>
+<h2 id="Key-indexed-counting"><a href="#Key-indexed-counting" class="headerlink" title="Key-indexed counting"></a>Key-indexed counting</h2><p>A simple and efficient sorting method for key-indexed strings (and other objects). With small radix <code>R</code>, it is a linear-time (<code>O(N)</code>) sort, where <code>R = # distinct keys</code>, <code>N = # strings</code>.</p>
+<p>Idea: Pre-allocate spaces for each key precisely (by computing the frequencies), then fill in each slot sequentially with the input strings.</p>
+<p>Property: key-indexed counting is <strong>stable</strong>.</p>
+<p>Steps:</p>
+<ol>
+<li>frequency counts</li>
+<li>counts =&gt; indices</li>
+<li>distribute specific data</li>
+<li>copy back to original string array</li>
+</ol>
+<p>Code from 5.1, algs4:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> N = a.length;</span><br><span class="line">String[] aux = <span class="keyword">new</span> String[N];</span><br><span class="line"><span class="keyword">int</span>[] count = <span class="keyword">new</span> <span class="keyword">int</span>[R+<span class="number">1</span>];</span><br><span class="line"><span class="comment">// Compute frequency counts.</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">   count[a[i].key() + <span class="number">1</span>]++;</span><br><span class="line"><span class="comment">// Transform counts to indices.</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; R; r++)</span><br><span class="line">   count[r+<span class="number">1</span>] += count[r];</span><br><span class="line"><span class="comment">// Distribute the records.</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">   aux[count[a[i].key()]++] = a[i];</span><br><span class="line"><span class="comment">// Copy back.</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++)</span><br><span class="line">   a[i] = aux[i];</span><br></pre></td></tr></table></figure></p>
+<p>Note: this sorting method does not comply with the theoretical lower bound <code>O(nlogn)</code> because it is <em>not</em> based on <strong>comparison</strong>.</p>
+<h2 id="LSD-least-significant-digit-first-radix-sorting"><a href="#LSD-least-significant-digit-first-radix-sorting" class="headerlink" title="LSD (least-significant-digit first) radix sorting"></a>LSD (least-significant-digit first) radix sorting</h2><blockquote>
+<p>To sort an array a[] of strings that each have exactly W characters, we do W key-indexed counting sorts: one for each character position, proceeding from right to left.</p>
+</blockquote>
+<p>Real-world example: card dealing - Deal into 13 piles, pick up the piles <em>in order</em>, then deal into four piles =&gt; sorted deck.</p>
+<p>Application: suitable for fixed-width strings (IDs, license plates, etc).</p>
+<p>Running time: <code>O(WN)</code>, linear in the # characters of the input.</p>
+<p><a href="https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LSD.java.html" target="_blank" rel="noopener">LSD</a></p>
+<p>Adaptation to variable-length strings: keep track of the MSD of each shorter string, and use them in subsequent passes of Key-indexed counting.</p>
+<h2 id="MSD-most-significant-digit-first-radix-sorting"><a href="#MSD-most-significant-digit-first-radix-sorting" class="headerlink" title="MSD (most-significant-digit first) radix sorting"></a>MSD (most-significant-digit first) radix sorting</h2><p>Can be used directly for variable-length strings.<br>Similar to quicksort, but partitions into one subarray for each possible value of the first (leftmost) character, then recursively sort the subarrrays.</p>
+<blockquote>
+<p>To sort an array a[] of strings, we sort them on their first character using key-indexed counting, then (recursively) sort the subarrays corresponding to each first-character value.</p>
+</blockquote>
+<p>Modifications: because the strings are of variable size, need to have one index in the <code>count</code> array store the short strings at each iteration - <code>len(count) = R + 2</code>.</p>
+<p><a href="https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/MSD.java.html" target="_blank" rel="noopener">MSD</a></p>
+<p>important issues:</p>
+<ul>
+<li>importance of cutting off small subarrays! Avoid sorting for numerous subarrays of small sizes by using a slower sort, e.g. insertion sort. Otherwise, dramatic explosion in running time &amp; space for larger radix, e.g. <code>R = 65536</code> for Unicode.</li>
+<li>Slow in the case of equal keys - key-index counting is expensive for sorting equal keys or keys with long common prefixes.</li>
+<li>Extra Space of the auxiliary <code>count</code>, <code>aux</code> arrays. <code>aux</code> can be moved out of the recursive function by sacrificing stability; but <code>count</code> cannot be moved out.</li>
+<li>Worst case linear running time, in the case of all equal strings. Sub-linear in the random string model.</li>
+</ul>
+<h2 id="Three-way-string-quicksort"><a href="#Three-way-string-quicksort" class="headerlink" title="Three-way string quicksort"></a>Three-way string quicksort</h2><p>characteristics:</p>
+<ul>
+<li>Appropriate when strings have long stretches of equal data - avoid the large number of empty subarrays in MSD.</li>
+<li>Does not use extra space.</li>
+</ul>
+<p><a href="https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Quick3string.java.html" target="_blank" rel="noopener">Quick3String</a></p>
 
           
         
